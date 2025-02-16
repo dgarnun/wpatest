@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="manifest" href="/static/manifest.json" />
+        <title>Umbrella Server - Iniciar sesión</title>
+        <style>
+            body {
+                background-color: black;
+                margin: 0;
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+            }
+
+            img {
+                max-width: 100%;
+                height: auto;
+                margin-bottom: 20px;
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            label {
+                font-size: 18px;
+                margin-bottom: 10px;
+                align-items: left;
+            }
+
+            input {
+                width: 300px;
+                padding: 10px;
+                margin-bottom: 20px;
+                border: none;
+                border-radius: 5px;
+            }
+
+            button {
+                width: 320px;
+                padding: 12px;
+                background-color: red;
+                color: white;
+                font-size: 16px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background-color: darkred;
+            }
+
+            .labelform {
+                color: white;
+            }
+
+            .login-container {
+                text-align: center;
+            }
+
+            .base {
+                text-align: center;
+                font-size: 5em;
+                text-transform: uppercase;
+            }
+
+            .base .notfound {
+                color: blue;
+                display: none;
+            }
+
+            .error {
+                color: red;
+                display: none;
+                font-size: 5em;
+                text-align: center;
+            }
+
+            .user {
+                text-align: center;
+                font-size: 70px;
+                color: white;
+                margin-top: 15px;
+            }
+
+            .granted {
+                color: green;
+                display: none;
+                text-align: center;
+                font-size: 5em;
+            }
+
+            @keyframes blink-animation {
+                0%,
+                100% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.5;
+                }
+            }
+
+            .blink {
+                animation: blink-animation 1s ease-in-out infinite;
+            }
+
+            .button-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100px;
+                margin-top: 25px;
+            }
+
+            .custom-button {
+                padding: 10px 20px;
+                border: 2px solid blue;
+                background-color: transparent;
+                color: blue;
+                font-size: 16px;
+                cursor: pointer;
+                outline: none;
+                transition: all 0.3s ease;
+            }
+
+            .custom-button:hover {
+                background-color: rgba(0, 0, 255, 0.1);
+            }
+
+            .custom-button:active {
+                transform: scale(0.98);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="login-container">
+            <!-- <img src="logo.png" alt="Logo" style="width: 30%" /> -->
+            <form id="loginForm" action="POST">
+                <label for="username" class="labelform">User</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    autocomplete="off"
+                    required
+                />
+                <label for="password" class="labelform">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    autocomplete="off"
+                    required
+                />
+                <button type="submit" style="margin-top: 20px">submit</button>
+            </form>
+        </div>
+        <div class="error blink" id="error">
+            <div>AUTHENTICATION ERROR</div>
+        </div>
+
+        <div class="granted" id="success">
+            <div class="blink">
+                <div>ACCESS GRANTED</div>
+            </div>
+            <div class="user">Welcome: ADMIN</div>
+            <div class="user">Grants: All privileges</div>
+            <div class="button-container">
+                <button id="myButton" class="custom-button">Logout</button>
+            </div>
+        </div>
+        <script>
+            function logout() {
+                const form = document.getElementById("loginForm");
+                const successElement = document.getElementById("success");
+                successElement.style.display = "none";
+                form.style.display = "flex";
+                form.reset();
+            }
+
+            document
+                .getElementById("myButton")
+                .addEventListener("click", logout);
+
+            const form = document.getElementById("loginForm");
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const username = document.getElementById("username").value;
+                const password = document.getElementById("password").value;
+
+                if (username == "admin" && password == "admin") {
+                    const successElement = document.getElementById("success");
+                    successElement.style.display = "block";
+                    form.style.display = "none";
+                } else {
+                    const errorElement = document.getElementById("error");
+                    errorElement.style.display = "block";
+                    form.style.display = "none";
+                    setTimeout(function () {
+                        errorElement.style.display = "none";
+                        form.style.display = "flex";
+                        form.reset();
+                    }, 3000);
+                }
+            });
+
+            // For service worker
+            if ("serviceWorker" in navigator) {
+                navigator.serviceWorker
+                    .register("static/service-worker.js")
+                    .then(() => console.log("Service Worker registrado"))
+                    .catch((error) =>
+                        console.log(
+                            "Error en el registro del Service Worker",
+                            error,
+                        ),
+                    );
+            }
+        </script>
+    </body>
+</html>
