@@ -1,7 +1,7 @@
 {
   "name": "RedTeam",
   "short_name": "RedTeam",
-  "start_url": "/",
+  "start_url": "/wpatest",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
